@@ -1,0 +1,10 @@
+.git
+.gitignore
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+node_modules/
+docs/
+Dockerfile
+deploy.sh

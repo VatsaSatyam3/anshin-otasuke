@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anshin Otasuke Agent - Caregiver Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Leaflet.js Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fa-solid fa-shield-halved brand-logo"></i>
+                <div class="brand-text">
+                    <h1>Anshin Otasuke</h1>
+                    <span>Safe & Secure Elderly Guardian</span>
+                </div>
+            </div>
+            <nav class="menu">
+                <a href="#" class="menu-item active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+                <a href="#" class="menu-item"><i class="fa-solid fa-user-shield"></i> Elderly Settings</a>
+                <a href="#" class="menu-item"><i class="fa-solid fa-bell"></i> Notification Log</a>
+                <a href="#" class="menu-item"><i class="fa-solid fa-gears"></i> Integrations</a>
+            </nav>
+            <div class="user-status-card">
+                <div class="avatar">
+                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=60" alt="Elderly Avatar">
+                </div>
+                <div class="user-info">
+                    <h4>Hana Yamada (84)</h4>
+                    <span class="status-badge active"><span class="pulse-dot"></span> Monitoring</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Top Navigation / Status Header -->
+            <header class="top-header">
+                <div class="page-title">
+                    <h2>Real-Time Monitoring Dashboard</h2>
+                    <p>Safety status and task activity logs for Hana Yamada</p>
+                </div>
+                <div class="system-statuses">
+                    <div class="status-indicator">
+                        <i class="fa-brands fa-line line-icon"></i>
+                        <span>LINE Bot: <strong>Connected</strong></span>
+                    </div>
+                    <div class="status-indicator">
+                        <i class="fa-solid fa-cloud-arrow-up cloud-icon"></i>
+                        <span>Cloud Run: <strong>Active</strong></span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+                <!-- Left Panel: Simulations and Logs -->
+                <section class="grid-card simulation-panel">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-laptop-code"></i> Demo Simulator</h3>
+                        <p>Event triggers for hackathon demonstration</p>
+                    </div>
+                    <div class="simulation-actions">
+                        <button class="sim-btn" id="btn-sim-invoice">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                            <span>① Daily Help: Invoice/Doc Analysis</span>
+                        </button>
+                        <button class="sim-btn sim-btn-danger" id="btn-sim-siren">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <span>② Emergency: Disaster Siren Alert</span>
+                        </button>
+                        <button class="sim-btn sim-btn-secondary" id="btn-sim-reset">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span>Reset Simulator Status</span>
+                        </button>
+                        <button class="sim-btn" id="btn-sim-eew" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; margin-top: 8px;">
+                            <i class="fa-solid fa-house-crack"></i>
+                            <span>③ Live EEW: JMA Early Warning Push</span>
+                        </button>
+                    </div>
+
+                    <div class="terminal-logs">
+                        <div class="terminal-header">
+                            <span>System Activity Log</span>
+                            <span class="terminal-dot"></span>
+                        </div>
+                        <div class="log-output" id="log-output">
+                            <div class="log-line">[SYSTEM] Anshin Otasuke Agent started successfully.</div>
+                            <div class="log-line">[SYSTEM] LINE Webhook connected.</div>
+                            <div class="log-line">[SYSTEM] Monitoring Target: Hana Yamada (Udagawacho, Shibuya)</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Middle Panel: Extracted Documents & Reminders -->
+                <section class="grid-card document-panel">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-folder-open"></i> Analyzed Documents & Tasks</h3>
+                        <p>Latest alerts and deadline-based tasks extracted by the agent</p>
+                    </div>
+                    <div class="doc-details" id="doc-details">
+                        <div class="no-doc-placeholder">
+                            <i class="fa-solid fa-receipt placeholder-icon"></i>
+                            <p>No documents analyzed yet.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Right Panel: Leaflet Map -->
+                <section class="grid-card map-panel">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-map-location-dot"></i> Live Map & Evacuation Route</h3>
+                        <p>Route map dynamically generated during emergencies</p>
+                    </div>
+                    <div id="map" class="leaflet-map-container"></div>
+                    <div class="route-directions" id="route-directions">
+                        <p class="placeholder-text"><i class="fa-solid fa-info-circle"></i> Normally displays target's current location. Evacuation route will be generated here during emergencies.</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Pulsing Red Emergency Overlay Modal -->
+    <div class="emergency-overlay" id="emergency-overlay">
+        <div class="emergency-modal">
+            <div class="emergency-icon-wrapper">
+                <i class="fa-solid fa-triangle-exclamation pulse-warning"></i>
+            </div>
+            <h2>【EMERGENCY WARNING ACTIVE】</h2>
+            <p class="alert-desc">An emergency disaster siren was detected near Hana Yamada's device!</p>
+            <div class="alert-info-box">
+                <p><strong>Current Location:</strong> 1-21-1 Jinnan, Shibuya (Near Google Japan Shibuya Office)</p>
+                <p><strong>Evacuation Shelter:</strong> Shibuya Jinnan Elementary School (Assigned Shelter)</p>
+            </div>
+            <div class="notification-status">
+                <i class="fa-solid fa-paper-plane"></i> Urgent emergency alerts (SMS / LINE) have been automatically sent to family and caregivers.
+            </div>
+            <button class="dismiss-btn" id="btn-close-emergency">Acknowledge Alert & View Evacuation Map</button>
+        </div>
+    </div>
+
+    <!-- Leaflet.js Map Library -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="app.js"></script>
+</body>
+</html>

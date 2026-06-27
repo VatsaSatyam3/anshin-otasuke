@@ -1,0 +1,11 @@
+# This file has been auto-generated to speed up Google Cloud Build
+# Ignore local environment and cache folders
+.gcloudignore
+.git
+.gitignore
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+node_modules/
+docs/

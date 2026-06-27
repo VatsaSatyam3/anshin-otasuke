@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPay Checkout Simulation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --paypay-red: #ff0033;
+            --paypay-dark: #1f1f1f;
+            --bg-color: #f7f9fa;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--paypay-dark);
+            padding: 15px;
+        }
+        .phone-container {
+            width: 100%;
+            max-width: 410px;
+            background: white;
+            border-radius: 36px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 8px solid #2d3748;
+            position: relative;
+        }
+        .header {
+            background-color: var(--paypay-red);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .paypay-logo {
+            background: white;
+            color: var(--paypay-red);
+            font-size: 1.8rem;
+            font-weight: 800;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .checkout-card {
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .amount-display {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--paypay-dark);
+            display: flex;
+            align-items: baseline;
+        }
+        .amount-display span {
+            font-size: 1.8rem;
+            margin-right: 2px;
+        }
+        .merchant-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #4a5568;
+            text-align: center;
+        }
+        .divider {
+            width: 100%;
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: 10px 0;
+        }
+        .senior-prompt {
+            background-color: #fff5f5;
+            border-left: 4px solid var(--paypay-red);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            color: #c53030;
+            line-height: 1.4;
+            display: flex;
+            gap: 10px;
+        }
+        .pay-btn {
+            width: 100%;
+            background-color: var(--paypay-red);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 16px;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 6px 20px rgba(255,0,51,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .pay-btn:active {
+            transform: scale(0.98);
+            background-color: #d6002b;
+        }
+        
+        /* Success Screen */
+        .success-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            z-index: 10;
+            animation: fadeIn 0.4s ease;
+        }
+        .success-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #48bb78;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3.5rem;
+            box-shadow: 0 10px 25px rgba(72,187,120,0.35);
+            animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .success-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #2f855a;
+        }
+        .success-desc {
+            color: #718096;
+            text-align: center;
+            padding: 0 30px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <!-- Success State -->
+        <div class="success-overlay" id="success-overlay">
+            <div class="success-circle">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <div class="success-text">PAYMENT COMPLETED</div>
+            <p class="success-desc" id="success-desc">Verification sent. The invoice task has been archived on your caregiver's dashboard.</p>
+        </div>
+
+        <!-- Checkout Header -->
+        <div class="header">
+            <div class="paypay-logo">P</div>
+            <h3>PayPay Checkout</h3>
+        </div>
+
+        <!-- Card Contents -->
+        <div class="checkout-card">
+            <div class="merchant-name" id="merchant-name">Shibuya Central Hospital</div>
+            <div class="amount-display">
+                <span>¥</span><span id="amount-val">4,200</span>
+            </div>
+            <div class="divider"></div>
+            
+            <div class="senior-prompt">
+                <i class="fa-solid fa-lightbulb" style="font-size: 1.2rem; margin-top: 2px;"></i>
+                <p>Anshin Guardian identified this utility bill. Tapping below will securely pay using your saved PayPay wallet.</p>
+            </div>
+            
+            <div class="divider"></div>
+            <button class="pay-btn" id="btn-pay">
+                <i class="fa-solid fa-wallet"></i> Pay Now with PayPay
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Extract URL query params
+        const urlParams = new URLSearchParams(window.location.search);
+        const amount = urlParams.get('amount') || '4,200';
+        const issuer = urlParams.get('issuer') || 'Shibuya Central Hospital';
+
+        document.getElementById('amount-val').innerText = parseInt(amount).toLocaleString();
+        document.getElementById('merchant-name').innerText = issuer;
+
+        // Play PayPay double-chime using Web Audio API
+        function playPayPayChime() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Tone 1: C5
+                const osc1 = audioCtx.createOscillator();
+                const gain1 = audioCtx.createGain();
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                gain1.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                osc1.connect(gain1);
+                gain1.connect(audioCtx.destination);
+                
+                // Tone 2: G5
+                const osc2 = audioCtx.createOscillator();
+                const gain2 = audioCtx.createGain();
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.15); // G5
+                gain2.gain.setValueAtTime(0.15, audioCtx.currentTime + 0.15);
+                osc2.connect(gain2);
+                gain2.connect(audioCtx.destination);
+                
+                osc1.start();
+                osc1.stop(audioCtx.currentTime + 0.15);
+                
+                osc2.start(audioCtx.currentTime + 0.15);
+                osc2.stop(audioCtx.currentTime + 0.4);
+            } catch (err) {
+                console.error("Audio API blocked or unsupported:", err);
+            }
+        }
+
+        // Handle Click
+        document.getElementById('btn-pay').addEventListener('click', async () => {
+            playPayPayChime();
+            
+            // Show Success Circle Overlay
+            document.getElementById('success-overlay').style.display = 'flex';
+            document.getElementById('success-desc').innerText = `Verification sent. ¥${parseInt(amount).toLocaleString()} payment to ${issuer} has been recorded on the Caregiver Dashboard.`;
+
+            // Post back to Backend API
+            try {
+                await fetch('/api/pay', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: parseInt(amount), issuer: issuer })
+                });
+            } catch (err) {
+                console.error("Failed to notify backend of payment:", err);
+            }
+        });
+    </script>
+</body>
+</html>
